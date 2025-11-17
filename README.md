@@ -43,8 +43,8 @@ python main.py filename [--mode MODE]
 Examples:
 
 ```bash
-python main.py initial_states/glider.txt --mode console
-python main.py initial_states/gosper_glider_gun.txt --mode gui
+python main.py initial_states/glider --mode console
+python main.py initial_states/gosper_glider_gun --mode gui
 ```
 
 > GUI mode requires the `tkinter` module.
