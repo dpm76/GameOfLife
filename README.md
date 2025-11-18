@@ -26,6 +26,78 @@ Game logic and user interface are cleanly separated across modules.
 
 ---
 
+## 🧩 Software Design, Architecture & Best Practices
+
+### Overview
+
+This project is structured with a clear separation of concerns:
+
+| Layer                       | Directory | Responsibility                                 |
+| --------------------------- | --------- | ---------------------------------------------- |
+| **Game Logic**              | `/game`   | Cell state management and Conway's rules       |
+| **User Interface**          | `/ui`     | Console and Tkinter GUI visualization          |
+| **Application Entry Point** | `main.py` | Command-line parsing and runtime configuration |
+
+This modular architecture allows the UI to evolve independently from the game engine—for example, adding a web or mobile UI without modifying the core simulation logic.
+
+---
+
+### 🎯 Domain-Driven Entities
+
+The simulation is based on two core domain objects:
+
+| Class           | Type                     | Responsibility                                              |
+| --------------- | ------------------------ | ----------------------------------------------------------- |
+| `Cell`          | Value Object             | Represents a living cell in the infinite grid               |
+| `CandidateCell` | Specialized Value Object | Used temporarily during evolution to compute survival/birth |
+
+The board (`Board`) receives and produces lists of these entities each turn, applying Conway's Game of Life rules.
+
+---
+
+### 🧠 Design Patterns & Engineering Principles Applied
+
+| Pattern / Principle                | Location                                 | Benefit                                              |
+| ---------------------------------- | ---------------------------------------- | ---------------------------------------------------- |
+| **Value Object Pattern**           | `Cell`                                   | Coordinates define identity; correct equality checks |
+| **Inheritance for Specialization** | `CandidateCell(Cell)`                    | Extends state only when required for evolution       |
+| **Transient Entity Pattern**       | `CandidateCell`                          | Exists only during a single turn → memory efficiency |
+| **Spatial Hashing**                | `Cell.create_hash()`                     | Efficient O(1) lookup in sparse infinite grid        |
+| **Separation of Concerns**         | `/game` vs `/ui`                         | Core logic isolated from rendering concerns          |
+| **Dependency Inversion Principle** | UI depends on interfaces (Board results) | Easy to test and replace UI                          |
+| **Encapsulation**                  | Private attributes                       | Protects internal state from external mutation       |
+| **Command-Line Interface Pattern** | `main.py`                                | Encourages flexible and scriptable usage             |
+
+---
+
+### 🧪 Testing & Maintainability
+
+Unit tests included in `/test` help ensure reliable behaviors:
+
+* correct cell identity and hashing
+* accurate neighbor generation
+* validated rule execution in `Board`
+
+Designed for:
+
+* fast execution
+* deterministic output
+* TDD-friendly iteration
+
+---
+
+### ⚙️ Performance Considerations
+
+| Optimization                                  | Result                                      |
+| --------------------------------------------- | ------------------------------------------- |
+| Only living cells are stored between turns    | Takes advantage of sparse grids             |
+| Only neighbors of living cells are considered | Avoids scanning infinite grid               |
+| Spatial hashing for identity                  | Simplifies comparisons and dictionary usage |
+
+These techniques allow **infinite board simulation** without large memory structures.
+
+---
+
 ## ▶️ Running the Application
 
 ```bash
@@ -160,6 +232,15 @@ Some classic patterns compatible with this format:
 | **Block**             | Still Life | Stays unchanged               |
 
 Multiple ready-to-use samples are located in the `initial_states/` directory.
+
+---
+
+## 🚀 Possible Future Enhancements
+
+* Support alternative rule sets (e.g., HighLife, Seeds…)
+* Parallelization or chunk-based updates
+* Web or GPU rendering (Canvas / WebGL)
+* Support for RLE pattern format (community standard)
 
 ---
 
